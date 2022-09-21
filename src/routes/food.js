@@ -8,7 +8,7 @@ const FoodRoutes = {
   },
 
   getFoodItem: (request, response) => {
-    Food.findOne({where: {foodName: request.body.foodName}})
+    Food.findOne({where: {id: request.params.id}})
       .then(foodRecord => response.status(200).send(foodRecord))
       .catch(error => console.log(error));
   },
@@ -20,15 +20,14 @@ const FoodRoutes = {
   },
 
   updateFoodItem: (request, response) => {
-    Food.update(request.body, {where: {id: request.body.id}})
+    Food.update(request.body, {where: {id: request.params.id}})
       .then(foodRecord => response.status(200).send(foodRecord))
       .catch(error => console.log(error));
   },
 
-  deleteFoodItem: (request, response) => {
-    Food.destroy({where: {id: request.body.id}})
-      .then(() => response.status(200))
-      .catch(error => console.log(error));
+  deleteFoodItem: async (request, response) => {
+    await Food.destroy({ where: { id: request.params.id } } );
+    response.status(200).send(`Successfully deleted id ${request.params.id}`);
   },
 };
 

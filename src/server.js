@@ -21,10 +21,10 @@ app.get('/', (request, response) => {
 
 // food CRUD methods
 app.get('/food', FoodRoutes.getFoodItems);
-app.get('/food/one', validator, FoodRoutes.getFoodItem);
+app.get('/food/:id', FoodRoutes.getFoodItem);
 app.post('/food', validator, FoodRoutes.createFoodItem);
-app.put('/food', validator, FoodRoutes.updateFoodItem);
-app.delete('/food', validator, FoodRoutes.deleteFoodItem);
+app.put('/food/:id', FoodRoutes.updateFoodItem);
+app.delete('/food/:id', FoodRoutes.deleteFoodItem);
 
 // error handling
 app.get('*', send404);
