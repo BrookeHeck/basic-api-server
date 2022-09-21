@@ -7,6 +7,12 @@ const FoodRoutes = {
       .catch(error => console.log(error));
   },
 
+  getFoodItem: (request, response) => {
+    Food.findOne({where: {foodName: request.body.foodName}})
+      .then(foodRecord => response.status(200).send(foodRecord))
+      .catch(error => console.log(error));
+  },
+
   createFoodItem: (request, response) => {
     Food.create(request.body)
       .then(foodRecord => response.status(200).send(foodRecord))

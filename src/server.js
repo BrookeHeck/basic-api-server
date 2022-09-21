@@ -3,6 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const logger = require('./middleware/logger');
+const validator = require('./middleware/validator');
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -19,10 +20,11 @@ app.get('/', (request, response) => {
 
 
 // food CRUD methods
-app.post('/food', FoodRoutes.createFoodItem);
 app.get('/food', FoodRoutes.getFoodItems);
-app.put('/food', FoodRoutes.updateFoodItem);
-app.delete('/food', FoodRoutes.deleteFoodItem);
+app.get('/food/one', validator, FoodRoutes.getFoodItem);
+app.post('/food', validator, FoodRoutes.createFoodItem);
+app.put('/food', validator, FoodRoutes.updateFoodItem);
+app.delete('/food', validator, FoodRoutes.deleteFoodItem);
 
 // error handling
 app.get('*', send404);
