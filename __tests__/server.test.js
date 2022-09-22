@@ -1,9 +1,13 @@
 'use strict';
 
+const { db } = require('./../src/models');
 const app = require('./../src/server');
 const supertest = require('supertest');
-
 const request = supertest(app);
+
+beforeAll(async () => {
+  await db.sync();
+});
 
 describe('Testing GET food routes', () => {
   test('Should read all food items', async () => {
