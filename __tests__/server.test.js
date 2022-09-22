@@ -1,9 +1,22 @@
 'use strict';
 
+const { Food, db } = require('./../src/models');
 const app = require('./../src/server');
 const supertest = require('supertest');
-
 const request = supertest(app);
+
+beforeAll(async () => {
+  await db.sync();
+  await request.post('/food').send({
+    foodName: 'TEST1',
+  });
+  await request.post('/food').send({
+    foodName: 'TEST2',
+  });
+  await request.post('/food').send({
+    foodName: 'TEST3',
+  });
+});
 
 describe('Testing GET food routes', () => {
   test('Should read all food items', async () => {
@@ -15,7 +28,7 @@ describe('Testing GET food routes', () => {
   test('Should read a single food item', async () => {
     const response = await request.get('/food/1');
     expect(response.status).toEqual(200);
-    expect(response.body.foodName).toEqual('test');
+    expect(response.body.foodName).toEqual('TEST1');
   });
 });
 
@@ -32,23 +45,20 @@ describe('Testing POST food route', () => {
 describe('Testing PUT food route', () => {
   test('Should update a single food item', async () => {
     await request.put('/food/2').send({
-      foodName: 'TEST',
+      foodName: 'TEST UPDATE',
     });
     const response = await request.get('/food/2');
     expect(response.status).toEqual(200);
     expect(response.body.id).toEqual(2);
-    expect(response.body.foodName).toEqual('TEST');
+    expect(response.body.foodName).toEqual('TEST UPDATE');
   });
 });
 
 describe('Testing DELETE food route', () => {
   test('Should delete a single food item', async () => {
-    const createResponse = await request.post('/food').send({
-      foodName: 'TEST',
-    });
-    await request.delete(`/food/${createResponse.body.id}`);
-    const response = await request.get(`/food/${createResponse.body.id}`);
-    expect(response.status).toEqual(200);
+    await request.delete(`/food/3`);
+    const foodRecord = await Food.findOne({ where: { id : 3}});
+    expect(foodRecord).not.toBeTruthy();
   });
 });
 
